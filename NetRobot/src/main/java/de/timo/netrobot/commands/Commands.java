@@ -12,6 +12,7 @@ public enum Commands {
 	VOLUME_UP(),
 	VOLUME_DOWN(),
 	VOLUME_MUTE(),
+	SHUTDOWN(),
 	EXIT();
 	
 	

@@ -19,7 +19,7 @@ public class CommandServer {
 	public CommandServer() {
 	}
 
-	public boolean listen() {
+	public void listen() {
 
 		Thread thread = new Thread(() -> {
 			try {
@@ -32,61 +32,57 @@ public class CommandServer {
 					Socket socket = server.accept();
 					System.out.println("Connection accepted");
 					BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
-					String command = br.readLine();
-					System.out.println("Received command: " + command);
-					if (Commands.CLICK_RIGHT.toString().equals(command)) {
-						NetRobot.invokeRightClick();
-					}
-					if (Commands.CLICK_LEFT.toString().equals(command)) {
-						NetRobot.invokeLeftClick();
-					}
-					if (Commands.MOUSE_UP.toString().equals(command)) {
-						NetRobot.moveMouseUp();
-					}
-					if (Commands.MOUSE_RIGHT.toString().equals(command)) {
-						NetRobot.moveMouseRight();
-					}
-					if (Commands.MOUSE_DOWN.toString().equals(command)) {
-						NetRobot.moveMouseDown();
-					}
-					if (Commands.MOUSE_LEFT.toString().equals(command)) {
-						NetRobot.moveMouseLeft();
-					}
-					if (Commands.VOLUME_SET.toString().equals(command)) {
-						AudioControl.setVolume(50); //TODO 50?
-					}
-					if (Commands.VOLUME_UP.toString().equals(command)) {
-						AudioControl.increaseVolume(5); //TODO 
-					}
-					if (Commands.VOLUME_DOWN.toString().equals(command)) {
-						AudioControl.decreaseVolume(5); //TODO
-					}
-					if (Commands.VOLUME_MUTE.toString().equals(command)) {
-						AudioControl.switchMute();
-					}
-					if (Commands.EXIT.toString().equals(command)) {
-						socket.close();
-
+					String command;
+					while ((command = br.readLine()) != null) {
+						System.out.println("Received command: " + command);
+						if (Commands.CLICK_RIGHT.toString().equals(command)) {
+							NetRobot.invokeRightClick();
+						}
+						if (Commands.CLICK_LEFT.toString().equals(command)) {
+							NetRobot.invokeLeftClick();
+						}
+						if (Commands.MOUSE_UP.toString().equals(command)) {
+							NetRobot.moveMouseUp();
+						}
+						if (Commands.MOUSE_RIGHT.toString().equals(command)) {
+							NetRobot.moveMouseRight();
+						}
+						if (Commands.MOUSE_DOWN.toString().equals(command)) {
+							NetRobot.moveMouseDown();
+						}
+						if (Commands.MOUSE_LEFT.toString().equals(command)) {
+							NetRobot.moveMouseLeft();
+						}
+						if (Commands.VOLUME_SET.toString().equals(command)) {
+							AudioControl.setVolume(50); //TODO 50?
+						}
+						if (Commands.VOLUME_UP.toString().equals(command)) {
+							AudioControl.increaseVolume(5);
+						}
+						if (Commands.VOLUME_DOWN.toString().equals(command)) {
+							AudioControl.decreaseVolume(5);
+						}
+						if (Commands.VOLUME_MUTE.toString().equals(command)) {
+							AudioControl.switchMute();
+						}
+						if (Commands.SHUTDOWN.toString().equals(command)) {
+							AudioControl.shutdown("Nachricht", 10, true);
+						}
+						if (Commands.EXIT.toString().equals(command)) {
+							socket.close();
+						}
 					}
 				}
 
-			} catch (BindException e) {
-				if (e.getMessage().contains("already in use")) {
-					System.out.println("Port bereits genutzt");
-				}
 			} catch (SocketException e) {
 				e.printStackTrace();
-				// nothing
+				//
 			} catch (IOException e) {
 				e.printStackTrace();
-			} finally {
-
 			}
 		});
 
 		thread.start();
-		return false;
 	}
 
 	public void disconnect() {

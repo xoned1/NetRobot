@@ -10,7 +10,7 @@ import javafx.scene.paint.Color;
 
 public class WindowController {
 
-	private NetworkService network = NetworkService.GetIntsance();
+	private NetworkService network = NetworkService.getInstance();
 
 	@FXML
 	private Button btnStartServer;
@@ -24,25 +24,34 @@ public class WindowController {
 	void initialize() {
 		this.gc = canvasConStatus.getGraphicsContext2D();
 		drawCircle(Color.BLACK);
+		startStopServer();
 	}
 
 	public void btnStartServer_onclick(ActionEvent event) {
+		startStopServer();
+	}
 
-		if (network.getServer().isRunning()) { // network.running
-			network.disconnect();
-			drawCircle(Color.RED);
-			btnStartServer.textProperty().set("Starting Server..");
+	private void startStopServer() {
+		if (network.getServer().isRunning()) {
+			stopServer();
 		} else {
-			network.setOn();
-			btnStartServer.textProperty().set("Stop Server..");
-			drawCircle(Color.GREEN);
+			startServer();
 		}
+	}
 
+	private void startServer() {
+		network.setOn();
+		btnStartServer.textProperty().set("Stop Server..");
+		drawCircle(javafx.scene.paint.Color.GREEN);
+	}
+
+	private void stopServer() {
+		network.disconnect();
+		drawCircle(javafx.scene.paint.Color.RED);
+		btnStartServer.textProperty().set("Start Server..");
 	}
 
 	private void drawCircle(Color color) {
-		// gc.clearRect(0, 0, 20, 20);
-
 		gc.setFill(color);
 		gc.fillOval(0, 0, 20, 20);
 	}

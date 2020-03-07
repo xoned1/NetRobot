@@ -1,21 +1,13 @@
 package de.timo.netrobot.net;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.MulticastSocket;
-import java.net.NetworkInterface;
-import java.net.SocketException;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Objects;
 
 public class BroadCast implements Runnable {
-
-	private DatagramSocket socket = null;
-	private Thread thread;
 
 	@Override
 	public void run() {
@@ -24,15 +16,13 @@ public class BroadCast implements Runnable {
 				broadcast("NetRobot", listAllBroadcastAddresses());
 				Thread.sleep(5000);
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
+		} catch (IOException | InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
 
 	public void start() {
-		thread = new Thread(this);
+		Thread thread = new Thread(this);
 		thread.start();
 	}
 
@@ -40,7 +30,7 @@ public class BroadCast implements Runnable {
 
 		for (InetAddress address : addresses) {
 			MulticastSocket multicastSocket = new MulticastSocket(8888);
-			socket = new DatagramSocket();
+			DatagramSocket socket = new DatagramSocket();
 			socket.setBroadcast(true);
 
 			byte[] buffer = broadcastMessage.getBytes();
@@ -60,7 +50,7 @@ public class BroadCast implements Runnable {
 				continue;
 			}
 
-			networkInterface.getInterfaceAddresses().stream().map(networkInt -> networkInt.getBroadcast())
+			networkInterface.getInterfaceAddresses().stream().map(InterfaceAddress::getBroadcast)
 					.filter(Objects::nonNull).forEach(broadcastList::add);
 		}
 		return broadcastList;

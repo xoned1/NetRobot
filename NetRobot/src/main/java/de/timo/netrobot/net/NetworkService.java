@@ -9,7 +9,7 @@ public class NetworkService {
 	
 	private NetworkService() { }
 
-	public static NetworkService GetIntsance() {
+	public static NetworkService getInstance() {
 		if (INSTANCE == null)
 			INSTANCE = new NetworkService();
 		return INSTANCE;
@@ -37,7 +37,7 @@ public class NetworkService {
 	}
 	
 	public void disconnect() {
-		//broadcast stop 
+		//TODO Stop Broadcasting
 		server.disconnect();
 	}
 	
